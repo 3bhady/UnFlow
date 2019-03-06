@@ -37,11 +37,11 @@ def compile(op=None):
         out, err = subprocess.Popen(['which', 'nvcc'], stdout=subprocess.PIPE).communicate()
         cuda_dir = out.decode().split('/cuda')[0]
 
-        nvcc_cmd = "nvcc -std=c++11 -c -o {} {} {} -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -I " + cuda_dir + " --expt-relaxed-constexpr"
+        nvcc_cmd = "nvcc -std=c++11 -c -o {} {} {} -x cu -Xcompiler -fPIC -I " + cuda_dir + " --expt-relaxed-constexpr"
         nvcc_cmd = nvcc_cmd.format(" ".join([fn_cu_o, fn_cu_cc]),
                                 tf_inc, tf_lib)
         subprocess.check_output(nvcc_cmd, shell=True)
-        gcc_cmd = "{} -std=c++11 -shared -o {} {} -fPIC -L " + cuda_dir + "/cuda/lib64 -lcudart {} -O2 -D GOOGLE_CUDA=1"
+        gcc_cmd = "{} -std=c++11 -shared -o {} {} -fPIC -L " + cuda_dir + "/cuda/lib64 -lcudart {} -O2"
         gcc_cmd = gcc_cmd.format(config['compile']['g++'],	
                                  " ".join([fn_so, fn_cu_o, fn_cc]),	
                                  tf_inc, tf_lib)
